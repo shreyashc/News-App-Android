@@ -18,11 +18,19 @@ public class Article implements Serializable {
     @Expose
     private Source SourceObject;
 
+    @Nullable
     private String author;
+
     private String title;
+
+    @Nullable
     private String description;
+
     private String url;
+
+    @Nullable
     private String urlToImage;
+
     private String publishedAt;
 
     public int getPk() {
@@ -114,12 +122,19 @@ public class Article implements Serializable {
 
 
     @Override
-    public boolean equals(@Nullable Object obj) {
-        if(obj == this) return true;
-
-        if(!(obj instanceof Article)) return false;
-
-        Article article = (Article) obj;
-        return author.equals(article.getAuthor()) && title.equals(article.getTitle()) && description.equals(article.getDescription()) && url.equals(article.getUrl()) &&urlToImage.equals(article.getUrlToImage()) && publishedAt.equals(article.getPublishedAt()) && content.equals(article.getContent());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Article)) return false;
+        Article article = (Article) o;
+        return
+//              getAuthor().equals(article.getAuthor()) && nullable
+                getTitle().equals(article.getTitle()) &&
+//                getDescription().equals(article.getDescription()) &&
+                        getUrl().equals(article.getUrl()) &&
+//                getUrlToImage().equals(article.getUrlToImage()) &&
+                        getPublishedAt().equals(article.getPublishedAt());//&&
+//                getContent().equals(article.getContent());
     }
+
+
 }

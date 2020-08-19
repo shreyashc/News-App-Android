@@ -22,4 +22,4 @@ public interface ArticleDao {
 
     @Delete
     void deleteArticle(Article article);
- }
+}

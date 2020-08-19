@@ -16,23 +16,13 @@ import com.bumptech.glide.Glide;
 import com.shreyashc.news.R;
 import com.shreyashc.news.models.Article;
 
-import java.util.List;
-
 public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHolder> {
     Context context;
     private OnItemClickListener listner;
-    private static final String TAG = "NewsAdapter";
-
-
-    public NewsAdapter(Context context, OnItemClickListener listner) {
-        this.context = context;
-        this.listner = listner;
-    }
-
     public static final DiffUtil.ItemCallback<Article> differCallback = new DiffUtil.ItemCallback<Article>() {
         @Override
         public boolean areItemsTheSame(@NonNull Article oldItem, @NonNull Article newItem) {
-            return oldItem.getUrl() == newItem.getUrl();
+            return oldItem.getUrl().equals(newItem.getUrl());
         }
 
         @Override
@@ -41,11 +31,20 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHol
         }
     };
 
+
+    public NewsAdapter(Context context, OnItemClickListener listner) {
+        this.context = context;
+        this.listner = listner;
+    }
+
+    private static final String TAG = "News";
+
+    public AsyncListDiffer<Article> getDiffer() {
+        return differ;
+    }
+
     private final AsyncListDiffer<Article> differ = new AsyncListDiffer<Article>(this, differCallback);
 
-    public void submitList(List<Article> list) {
-        differ.submitList(list);
-    }
 
     @NonNull
     @Override

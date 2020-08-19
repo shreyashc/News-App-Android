@@ -16,10 +16,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.shreyashc.news.NewsViewModel;
-import com.shreyashc.news.NewsViewModelFactory;
 import com.shreyashc.news.R;
+import com.shreyashc.news.activities.NewsActivity;
 import com.shreyashc.news.models.Article;
+import com.shreyashc.news.viewmodels.NewsViewModel;
+import com.shreyashc.news.viewmodels.NewsViewModelFactory;
 
 public class ArticleFragment extends Fragment {
     WebView webView;
@@ -40,6 +41,8 @@ public class ArticleFragment extends Fragment {
         final Article article = args.getArticle();
         webView = view.findViewById(R.id.webView);
         fab = view.findViewById(R.id.fab);
+        ((NewsActivity) getActivity()).getSupportActionBar().setTitle(article.getTitle());
+
         newsViewModel = new ViewModelProvider(this, new NewsViewModelFactory(getActivity().getApplication())).get(NewsViewModel.class);
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);

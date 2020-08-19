@@ -5,86 +5,40 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.shreyashc.news.NewsViewModel;
-import com.shreyashc.news.NewsViewModelFactory;
 import com.shreyashc.news.R;
+import com.shreyashc.news.activities.NewsActivity;
 import com.shreyashc.news.adapters.NewsAdapter;
 import com.shreyashc.news.models.Article;
 import com.shreyashc.news.models.NewsResponse;
+import com.shreyashc.news.util.Resource;
+import com.shreyashc.news.viewmodels.NewsViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class BreakingNewsFragment extends Fragment implements NewsAdapter.OnItemClickListener {
-
-    ArrayList<Article> articleArrayList = new ArrayList<>();
+    public static final int QUERY_PAGE_SIZE = 20;
     NewsAdapter newsAdapter;
+    ProgressBar progressBar;
     NewsViewModel newsViewModel;
     RecyclerView rvBreaking;
     private static final String TAG = "BreakingNewsFragment";
+    List<Article> newsArticles;
+    private boolean isLoading = false;
+    private boolean isLastPage = false;
 
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_breaking_news, container, false);
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-
-        rvBreaking = view.findViewById(R.id.rvBreakingNews);
-        newsViewModel = new ViewModelProvider(this, new NewsViewModelFactory(getActivity().getApplication())).get(NewsViewModel.class);
-        newsViewModel.init();
-        setUpRecyclerView();
-        LiveData<NewsResponse> res = newsViewModel.getNews();
-        if (res == null) {
-            Toast.makeText(getContext(), "No Internet Connection", Toast.LENGTH_LONG).show();
-        } else {
-            res.observe(getViewLifecycleOwner(), new Observer<NewsResponse>() {
-                @Override
-                public void onChanged(NewsResponse newsResponse) {
-                    Log.d(TAG, "onChanged: " + newsResponse);
-                    if(newsResponse == null){
-                        Toast.makeText(getContext(), "Falied to load news!", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    List<Article> newsArticles = newsResponse.getArticles();
-                    articleArrayList.addAll(newsArticles);
-                    newsAdapter.submitList(articleArrayList);
-                    newsAdapter.notifyDataSetChanged();
-                }
-            });
-        }
-
-
-    }
-
-    private void setUpRecyclerView() {
-        if (newsAdapter == null) {
-            newsAdapter = new NewsAdapter(requireContext(), this);
-            rvBreaking.setLayoutManager(new LinearLayoutManager(requireContext()));
-            rvBreaking.setAdapter(newsAdapter);
-        } else {
-            newsAdapter.notifyDataSetChanged();
-        }
-    }
 
     @Override
     public void onItemClicked(Article article) {
@@ -93,4 +47,100 @@ public class BreakingNewsFragment extends Fragment implements NewsAdapter.OnItem
         Navigation.findNavController(getView()).navigate(R.id.action_breakingNewsFragment_to_articleFragment, bundle);
 
     }
+
+    private boolean isScolling = false;
+    RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
+
+
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            LinearLayoutManager layoutManager = ((LinearLayoutManager) recyclerView.getLayoutManager());
+            int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+            int visibleItemCount = layoutManager.getChildCount();
+            int totalItemCount = layoutManager.getItemCount();
+
+            boolean isNotLoadingAndNotLastPage = !isLoading && !isLastPage;
+            boolean isAtLastItem = firstVisibleItemPosition + visibleItemCount >= totalItemCount;
+            boolean isNotAtBeginning = firstVisibleItemPosition >= 0;
+            boolean isTotalMoreThanVisible = totalItemCount >= QUERY_PAGE_SIZE;
+
+            boolean shouldPaginate = isNotLoadingAndNotLastPage && isAtLastItem && isNotAtBeginning && isTotalMoreThanVisible && isScolling;
+
+            if (shouldPaginate) {
+                newsViewModel.safeBreakingNewsCall();
+                isScolling = false;
+            }
+
+        }
+
+        @Override
+        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+            if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                isScolling = true;
+            }
+        }
+
+    };
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        Log.d(TAG, "onCreateView: ");
+        return inflater.inflate(R.layout.fragment_breaking_news, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onViewCreated: ");
+        super.onViewCreated(view, savedInstanceState);
+        progressBar = view.findViewById(R.id.paginationProgressBar);
+        rvBreaking = view.findViewById(R.id.rvBreakingNews);
+        newsViewModel = ((NewsActivity) getActivity()).getNewsViewModel();
+        newsViewModel.init();
+        ((NewsActivity) getActivity()).getSupportActionBar().setTitle("News");
+
+        setUpRecyclerView();
+        newsViewModel.breakingNews.observe(getViewLifecycleOwner(), new Observer<Resource<NewsResponse>>() {
+            @Override
+            public void onChanged(Resource<NewsResponse> newsResponseResource) {
+                if (newsResponseResource.isLoading()) {
+                    progressBar.setVisibility(View.VISIBLE);
+                } else if (newsResponseResource.isSuccess()) {
+
+                    progressBar.setVisibility(View.INVISIBLE);
+
+                    newsAdapter.getDiffer().submitList(newsResponseResource.getResource().getArticles());
+//                    newsAdapter.notifyDataSetChanged();
+
+                    int totalPages = newsResponseResource.getResource().getTotalResults() / QUERY_PAGE_SIZE + 2;
+                    isLastPage = newsViewModel.getBreakingNewsPageNo() == totalPages;
+                    if (isLastPage) {
+                        rvBreaking.setPadding(0, 0, 0, 0);
+                        progressBar.setVisibility(View.INVISIBLE);
+                    }
+
+
+                } else if (newsResponseResource.getError() != null) {
+                    Log.d(TAG, "onChanged: " + newsResponseResource.getError());
+                    Toast.makeText(getContext(), newsResponseResource.getError(), Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
+
+
+    }
+
+    private void setUpRecyclerView() {
+        newsAdapter = new NewsAdapter(requireContext(), this);
+        rvBreaking.setLayoutManager(new LinearLayoutManager(requireContext()));
+        rvBreaking.setAdapter(newsAdapter);
+        rvBreaking.addOnScrollListener(scrollListener);
+
+    }
+
+
 }

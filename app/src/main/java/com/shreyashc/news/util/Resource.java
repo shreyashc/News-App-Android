@@ -1,7 +1,7 @@
 package com.shreyashc.news.util;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+/*
 
 public class Resource<T> {
     @NonNull
@@ -32,4 +32,59 @@ public class Resource<T> {
 
 
     public enum Status {SUCCESS, ERROR, LOADING}
+}
+*/
+
+public class Resource<T> {
+    private T resource;
+    private String error;
+    private boolean loading = false;
+    private boolean suc;
+
+    private Resource() {
+    }
+
+    public static <T> Resource<T> success(@Nullable T body) {
+        final Resource<T> resource = new Resource<>();
+        resource.error = null;
+        resource.resource = body;
+        resource.suc = true;
+        return resource;
+    }
+
+    public static <T> Resource error(@Nullable String error) {
+        final Resource<T> resource = new Resource<>();
+        resource.error = error;
+        resource.suc = false;
+        return resource;
+    }
+
+    public static <T> Resource<T> loading(@Nullable T body) {
+        final Resource<T> resource = new Resource<>();
+        resource.error = null;
+        resource.loading = true;
+        resource.resource = body;
+        return resource;
+    }
+
+    public boolean isSuccess() {
+        return suc;
+    }
+
+    public boolean isFail() {
+        return suc;
+    }
+
+    @Nullable
+    public T getResource() {
+        return resource;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public boolean isLoading() {
+        return loading;
+    }
 }

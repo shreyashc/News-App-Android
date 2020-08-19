@@ -1,4 +1,4 @@
-package com.shreyashc.news;
+package com.shreyashc.news.application;
 
 
 import android.app.Application;

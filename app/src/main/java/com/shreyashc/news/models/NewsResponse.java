@@ -14,6 +14,10 @@ public class NewsResponse {
         this.totalResults = totalResults;
     }
 
+    public NewsResponse() {
+
+    }
+
     public List<Article> getArticles() {
         return articles;
     }

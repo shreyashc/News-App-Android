@@ -1,4 +1,4 @@
-package com.shreyashc.news;
+package com.shreyashc.news.viewmodels;
 
 import android.app.Application;
 
@@ -14,14 +14,14 @@ public class NewsViewModelFactory implements ViewModelProvider.Factory {
 
     public NewsViewModelFactory(Application application) {
         this.application = application;
-        newsRepository=NewsRepository.getInstance(application);
+        newsRepository = NewsRepository.getInstance(application);
     }
 
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return (T) new NewsViewModel(application,newsRepository);
+        return (T) new NewsViewModel(application, newsRepository);
 
     }
 }

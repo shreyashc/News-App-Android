@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="0dp"
     tools:context=".fragments.BreakingNewsFragment">
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvBreakingNews"
@@ -13,23 +15,26 @@
         android:background="#FFFFFF"
         android:clipToPadding="false"
         android:paddingBottom="50dp"
-        tools:listitem="@layout/item_article_preview"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
         android:id="@+id/paginationProgressBar"
-        style="?attr/progressBarStyle"
-        android:visibility="invisible"
-        android:background="@android:color/transparent"
+        style="@style/Widget.MaterialProgressBar.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_marginBottom="-4dp"
+        android:indeterminate="true"
+        android:indeterminateTint="#939393"
+        android:paddingBottom="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        />
-
-
+        app:mpb_progressStyle="horizontal"
+        app:mpb_useIntrinsicPadding="false" />
 </androidx.constraintlayout.widget.ConstraintLayout>
