@@ -37,13 +37,11 @@ public class NewsAdapter extends RecyclerView.Adapter<NewsAdapter.ArticleViewHol
         this.listner = listner;
     }
 
-    private static final String TAG = "News";
-
     public AsyncListDiffer<Article> getDiffer() {
         return differ;
     }
 
-    private final AsyncListDiffer<Article> differ = new AsyncListDiffer<Article>(this, differCallback);
+    private final AsyncListDiffer<Article> differ = new AsyncListDiffer<>(this, differCallback);
 
 
     @NonNull

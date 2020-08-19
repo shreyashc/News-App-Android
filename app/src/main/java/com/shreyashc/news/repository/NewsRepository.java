@@ -18,7 +18,6 @@ import retrofit2.Call;
 
 public class NewsRepository {
     private static NewsApi api;
-    private static final String TAG = "NewsRepository";
 
     //    private  static  NewsRepository repository;
     private ArticleDao articleDao;

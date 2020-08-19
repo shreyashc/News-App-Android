@@ -25,17 +25,14 @@ import com.shreyashc.news.models.NewsResponse;
 import com.shreyashc.news.util.Resource;
 import com.shreyashc.news.viewmodels.NewsViewModel;
 
-import java.util.List;
-
 
 public class BreakingNewsFragment extends Fragment implements NewsAdapter.OnItemClickListener {
     public static final int QUERY_PAGE_SIZE = 20;
-    NewsAdapter newsAdapter;
-    ProgressBar progressBar;
-    NewsViewModel newsViewModel;
-    RecyclerView rvBreaking;
+    private NewsAdapter newsAdapter;
+    private ProgressBar progressBar;
+    private NewsViewModel newsViewModel;
+    private RecyclerView rvBreaking;
     private static final String TAG = "BreakingNewsFragment";
-    List<Article> newsArticles;
     private boolean isLoading = false;
     private boolean isLastPage = false;
 

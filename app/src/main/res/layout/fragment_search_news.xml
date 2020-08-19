@@ -22,7 +22,7 @@
             android:id="@+id/etSearch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/ic_search"
+            android:drawableStart="@drawable/ic_search"
             android:fontFamily="@font/open_sans"
             android:hint="Search"
             android:includeFontPadding="true"
@@ -46,9 +46,10 @@
 
     <ProgressBar
         android:id="@+id/paginationProgressBar"
-        style="?attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+       android:indeterminateTint="@color/colorPrimary"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Circular.Indeterminate"
         android:background="@android:color/transparent"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"

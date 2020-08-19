@@ -21,7 +21,6 @@ import com.shreyashc.news.adapters.NewsAdapter;
 import com.shreyashc.news.models.Article;
 import com.shreyashc.news.viewmodels.NewsViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,7 +28,6 @@ public class SavedNewsFragment extends Fragment implements NewsAdapter.OnItemCli
     NewsViewModel newsViewModel;
     NewsAdapter newsAdapter;
     RecyclerView rvSavedNews;
-    ArrayList<Article> articleArrayList = new ArrayList<>();
 
 
     @Override

@@ -58,6 +58,7 @@ public class Article implements Serializable {
         return SourceObject;
     }
 
+    @org.jetbrains.annotations.Nullable
     public String getAuthor() {
         return author;
     }
@@ -66,6 +67,7 @@ public class Article implements Serializable {
         return title;
     }
 
+    @org.jetbrains.annotations.Nullable
     public String getDescription() {
         return description;
     }
@@ -74,6 +76,7 @@ public class Article implements Serializable {
         return url;
     }
 
+    @org.jetbrains.annotations.Nullable
     public String getUrlToImage() {
         return urlToImage;
     }
