@@ -31,8 +31,7 @@ import static android.net.NetworkCapabilities.TRANSPORT_WIFI;
 
 public class NewsViewModel extends AndroidViewModel {
 
-    //    public static final String API_KEY = "cdc46dec344149d4b3411a8a4e17bdf7"; //apikey1
-    public static final String API_KEY = "7469121d99de41a7a8efe2c20a5e72f2";       //apikey2
+    public static final String API_KEY = // get your api ker form newsapi.org
     private static final String TAG = "NewsViewModel";
     public MutableLiveData<Resource<NewsResponse>> breakingNews = new MutableLiveData();
     public NewsResponse breakingNewsResponse = null;
